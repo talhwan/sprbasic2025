@@ -10,7 +10,7 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
-    @RequestMapping("/test")
+    /*@RequestMapping("/test")
     public String test(){
         return "test";
     }
@@ -34,9 +34,9 @@ public class IndexController {
     }
 
     //일반 컨트롤러 이고, 페이지를 리턴해줄꺼야!!
-    @RequestMapping("/page") //
+    @RequestMapping("/page1") //
     public String page(){
-        return "page";
+        return "page1";
     }
-
+*/
 }
