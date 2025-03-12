@@ -2,6 +2,7 @@ package com.thc.sprbasic2025.controller.page;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -17,8 +18,12 @@ public class DefaultController {
     public String index(){
         return "index";
     }
+    @RequestMapping("/{page}")
+    public String page(@PathVariable String page){
+        return page;
+    }
 
-    @RequestMapping("/sum")
+    /*@RequestMapping("/sum")
     public String sum(@RequestParam int a, @RequestParam int b, String name, Model model){
         //@RequestParam 어노테이션이 붙은 파라미터인 경우에는 없으면 에러납니다..
         System.out.println("a : " + a);
@@ -109,6 +114,6 @@ public class DefaultController {
         }
 
         return "sum";
-    }
+    }*/
 
 }

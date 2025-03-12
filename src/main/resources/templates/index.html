@@ -3,8 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>index</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 <body>
 index 입니다!!
+<a href="javascript:test()">rest ctrl 확인!!</a>
+
+<div>
+    1. 숫자 2개 보내서 곱한 값 아작스로 받아보기!!
+</div>
+<div>
+    2. id랑 pw 보내보고, 아이디 1234 비번 1111 인 경우에만 성공 메세지 보내보기!
+</div>
+
+<script>
+    function test(){
+        $.ajax({
+            url: "/api/test",
+            method: "GET",
+            data:{
+                a : 123,
+                b : 234
+            },
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+
+            },
+        });
+    }
+</script>
 </body>
 </html>
