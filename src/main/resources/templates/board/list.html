@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+list
+<div>
+    <button onclick="listBoard()">목록 보기!</button>
+</div>
+
+<script>
+    function listBoard(){
+        $.ajax({
+            url: "/api/board/list",
+            method: "GET",
+            data:{},
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+                //$("#p_result").html(result);
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+</script>
+</body>
+</html>
