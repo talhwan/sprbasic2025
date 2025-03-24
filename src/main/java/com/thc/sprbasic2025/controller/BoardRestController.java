@@ -34,6 +34,28 @@ public class BoardRestController {
         resultMap.put("order", order);
         return resultMap;
     }
+
+    @GetMapping("/update/{order}")
+    public Map<String, Object> update(@PathVariable("order") int order
+            , @RequestParam Map<String, Object> param){
+        int resultCode = 0;
+        resultCode = 200;
+
+        Map<String, Object> board = list.get(order - 1);
+        String title = (String) param.get("title");
+        if(title != null){
+            board.put("title", title);
+        }
+        String content = (String) param.get("content");
+        if(content != null){
+            board.put("content", content);
+        }
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("status", resultCode);
+        return resultMap;
+    }
+
     @GetMapping("/list")
     public Map<String, Object> list(){
         int resultCode = 0;

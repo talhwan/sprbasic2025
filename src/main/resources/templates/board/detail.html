@@ -10,9 +10,31 @@ detail
 <div>
     order : <input type="number" id="input_order"/> <br/>
     <button onclick="detailBoard()">상세 보기!</button>
+    <br/>
+    <br/>
+    <input type="text" id="detail_board_title" /> <br/>
+    <input type="text" id="detail_board_content" /> <br/>
+
+    <button onclick="updateBoard()">수정하기</button>
 </div>
 
 <script>
+    function updateBoard(){
+        $.ajax({
+            url: "/api/board/update/" + $("#input_order").val(),
+            method: "GET",
+            data:{
+                title : $("#detail_board_title").val()
+                , content : $("#detail_board_content").val()
+            },
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
     function detailBoard(){
         $.ajax({
             url: "/api/board/detail/" + $("#input_order").val(),
@@ -20,6 +42,11 @@ detail
             data:{},
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
+
+                let board = data["data"];
+                $("#detail_board_title").val(board["title"]);
+                let content = board["content"];
+                $("#detail_board_content").val(content);
                 //$("#p_result").html(result);
             },
             error: (data, status, xhr)=>{
