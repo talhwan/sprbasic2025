@@ -9,20 +9,20 @@
 detail
 <div>
     order : <input type="number" id="input_order"/> <br/>
-    <button onclick="detailBoard()">상세 보기!</button>
+    <button onclick="detailPost()">상세 보기!</button>
     <br/>
     <br/>
-    <input type="text" id="detail_board_title" /> <br/>
-    <input type="text" id="detail_board_content" /> <br/>
+    <input type="text" id="detail_post_title" /> <br/>
+    <input type="text" id="detail_post_content" /> <br/>
 
-    <button onclick="updateBoard()">수정하기</button>
-    <button onclick="deleteBoard()">삭제하기</button>
+    <button onclick="updatePost()">수정하기</button>
+    <button onclick="deletePost()">삭제하기</button>
 </div>
 
 <script>
-    function deleteBoard(){
+    function deletePost(){
         $.ajax({
-            url: "/api/board/delete",
+            url: "/api/post/delete",
             method: "GET",
             data:{
                 order : $("#input_order").val()
@@ -35,13 +35,13 @@ detail
             },
         });
     }
-    function updateBoard(){
+    function updatePost(){
         $.ajax({
-            url: "/api/board/update/" + $("#input_order").val(),
+            url: "/api/post/update/" + $("#input_order").val(),
             method: "GET",
             data:{
-                title : $("#detail_board_title").val()
-                , content : $("#detail_board_content").val()
+                title : $("#detail_post_title").val()
+                , content : $("#detail_post_content").val()
             },
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
@@ -51,18 +51,18 @@ detail
             },
         });
     }
-    function detailBoard(){
+    function detailPost(){
         $.ajax({
-            url: "/api/board/detail/" + $("#input_order").val(),
+            url: "/api/post/detail/" + $("#input_order").val(),
             method: "GET",
             data:{},
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
 
-                let board = data["data"];
-                $("#detail_board_title").val(board["title"]);
-                let content = board["content"];
-                $("#detail_board_content").val(content);
+                let post = data["data"];
+                $("#detail_post_title").val(post["title"]);
+                let content = post["content"];
+                $("#detail_post_content").val(content);
                 //$("#p_result").html(result);
             },
             error: (data, status, xhr)=>{

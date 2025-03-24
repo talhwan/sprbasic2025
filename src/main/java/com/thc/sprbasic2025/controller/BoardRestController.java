@@ -42,6 +42,12 @@ public class BoardRestController {
         resultCode = 200;
 
         Map<String, Object> board = list.get(order - 1);
+        Object tempOrder = board.get("order");
+        if(tempOrder == null){
+            //이미 지워진 글
+            return null;
+        }
+
         String title = (String) param.get("title");
         if(title != null){
             board.put("title", title);
@@ -50,6 +56,21 @@ public class BoardRestController {
         if(content != null){
             board.put("content", content);
         }
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("status", resultCode);
+        return resultMap;
+    }
+    @GetMapping("/delete")
+    public Map<String, Object> delete(@RequestParam int order){
+        int resultCode = 0;
+        resultCode = 200;
+
+        Map<String, Object> board = list.get(order - 1);
+        board.remove("order");
+        board.remove("title");
+        board.remove("content");
+        //오더, title, content가 지워져 있으면 지운 것!!
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("status", resultCode);
