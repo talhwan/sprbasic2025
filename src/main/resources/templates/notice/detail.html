@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notice Detail</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+Notice Detail!!
+
+<script>
+    let url = location.href;
+    //alert(url);
+
+    // http://localhost:8080/notice/detail/1
+
+    /*
+    1번 방법!!
+    / split!!
+
+    let arrayUrl = url.split("/");
+    let id = arrayUrl[arrayUrl.length - 1];
+
+    2번 방법
+    / lastIndexOf
+    * */
+
+    let lastIndex = url.lastIndexOf("/");
+    let id = url.substring(lastIndex + 1);
+
+    alert(id);
+
+    function detailNotice(){
+        $.ajax({
+            url: "/api/notice/detail",
+            method: "GET",
+            data:{
+                id : id
+            },
+            success: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+</script>
+
+</body>
+</html>

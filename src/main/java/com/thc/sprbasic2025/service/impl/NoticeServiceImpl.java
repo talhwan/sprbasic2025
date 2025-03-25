@@ -27,6 +27,11 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public List<Map<String, Object>> list(String title, String author) {
+
+        if((title == null || title.isEmpty()) && (author == null || author.isEmpty())){
+            return list;
+        }
+
         List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         for(Map<String, Object> each : list){
             boolean needToAdd = false;

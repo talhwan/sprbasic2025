@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/notice")
 @Controller
 public class NoticeController {
-
     /*
     @GetMapping("/create")
     public String create(){
@@ -19,10 +18,12 @@ public class NoticeController {
         return "notice/update";
     }
     */
-
     @GetMapping("/{page}")
     public String page(@PathVariable String page){
         return "notice/" + page;
     }
-
+    @GetMapping("/{page}/{id}")
+    public String page2(@PathVariable String page, @PathVariable String id){
+        return "notice/" + page;
+    }
 }
