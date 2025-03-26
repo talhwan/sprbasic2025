@@ -10,29 +10,48 @@
 
 Notice Detail!!
 
+title : <input type="text" id="detail_notice_title" class="input_detail"> <br/>
+content : <input type="text" id="detail_notice_content" class="input_detail"> <br/>
+author : <input type="text" id="detail_notice_author" class="input_detail"> <br/>
+
+<button onclick="updateNotice()">수정하기</button>
+<button onclick="deleteNotice()">삭제하기</button>
+
 <script>
-    let url = location.href;
-    //alert(url);
+    function getIdFromUrl(){
+        let url = location.href;
+        //alert(url);
 
-    // http://localhost:8080/notice/detail/1
+        // http://localhost:8080/notice/detail/1
 
-    /*
-    1번 방법!!
-    / split!!
+        /*
+        1번 방법!!
+        / split!!
 
-    let arrayUrl = url.split("/");
-    let id = arrayUrl[arrayUrl.length - 1];
+        let arrayUrl = url.split("/");
+        let id = arrayUrl[arrayUrl.length - 1];
 
-    2번 방법
-    / lastIndexOf
-    * */
+        2번 방법
+        / lastIndexOf
+        * */
 
-    let lastIndex = url.lastIndexOf("/");
-    let id = url.substring(lastIndex + 1);
+        let lastIndex = url.lastIndexOf("/");
+        let id = url.substring(lastIndex + 1);
+        /*
+        ? 로 시작하는 거 부터 잘라내야 합니다!
+        * */
 
-    alert(id);
+        let index2 = url.indexOf("?");
+        if(index2 > -1){
+            id = id.substring(0, index2);
+        }
+        return id;
+    }
 
-    function detailNotice(){
+    //상세 정보 가져오기!!
+    detailNotice(getIdFromUrl());
+
+    function detailNotice(id){
         $.ajax({
             url: "/api/notice/detail",
             method: "GET",
@@ -41,6 +60,58 @@ Notice Detail!!
             },
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
+                /*
+                $("#detail_notice_title").val(data["title"]);
+                $("#detail_notice_content").val(data["content"]);
+                $("#detail_notice_author").val(data["author"]);
+                */
+                let input_detail = $(".input_detail");
+                for(let each of input_detail){
+                    let eachId = $(each).attr("id");
+                    let keyword = eachId.replace("detail_notice_", "");
+                    $(each).val(data[keyword]);
+                }
+
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+
+    function updateNotice(){
+
+        let param = {};
+        param["id"] = getIdFromUrl();
+        let input_detail = $(".input_detail");
+        for(let each of input_detail){
+            let eachId = $(each).attr("id");
+            let keyword = eachId.replace("detail_notice_", "");
+            param[keyword] = $(each).val();
+        }
+        alert(JSON.stringify(param));
+
+        $.ajax({
+            url: "/api/notice/update",
+            method: "GET",
+            data: param,
+            success: (data, status, xhr)=>{
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+    function deleteNotice(){
+
+        let param = {};
+        param["id"] = getIdFromUrl();
+
+        $.ajax({
+            url: "/api/notice/delete",
+            method: "GET",
+            data: param,
+            success: (data, status, xhr)=>{
             },
             error: (data, status, xhr)=>{
                 alert(JSON.stringify(data));

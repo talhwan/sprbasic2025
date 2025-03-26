@@ -26,9 +26,26 @@ public class NoticeRestController {
         int resultCode = noticeService.create(title, content, author);
         return resultCode;
     }
+
+    @GetMapping("/update")
+    public void update(@RequestParam Map<String, Object> param){
+        noticeService.update(param);
+    }
+
+    @GetMapping("/delete")
+    public void delete(@RequestParam int id){
+        noticeService.delete(id);
+    }
+
     @GetMapping("/list")
     public List<Map<String, Object>> list(String title, String author){
         List<Map<String, Object>> resultData = noticeService.list(title, author);
         return resultData;
+    }
+
+    @GetMapping("/detail")
+    public Map<String, Object> detail(@RequestParam int id){
+        Map<String, Object> notice = noticeService.detail(id);
+        return notice;
     }
 }
