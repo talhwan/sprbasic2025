@@ -37,7 +37,7 @@ public class NoticeServiceImpl implements NoticeService {
         newNotice.setContent(content);
         newNotice.setAuthor(author);
 
-        noticeRepository.save(newNotice);
+        //noticeRepository.save(newNotice);
 
         return 200;
     }
