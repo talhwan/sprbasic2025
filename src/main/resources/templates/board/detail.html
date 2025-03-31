@@ -8,7 +8,7 @@
 <body>
 detail
 <div>
-    order : <input type="number" id="input_order"/> <br/>
+    id : <input type="number" id="input_order"/> <br/>
     <button onclick="detailBoard()">상세 보기!</button>
     <br/>
     <br/>
@@ -53,9 +53,12 @@ detail
     }
     function detailBoard(){
         $.ajax({
-            url: "/api/board/detail/" + $("#input_order").val(),
+            //url: "/api/board/detail/" + $("#input_order").val(),
+            url: "/api/board/detail",
             method: "GET",
-            data:{},
+            data:{
+                id : $("#input_order").val()
+            },
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
 

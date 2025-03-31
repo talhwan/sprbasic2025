@@ -10,6 +10,7 @@ create
 <div>
     title : <input type="text" id="input_title"/> <br/>
     content : <input type="text" id="input_content"/> <br/>
+    author : <input type="text" id="input_author"/> <br/>
     <button onclick="createBoard()">작성하기!</button>
 </div>
 
@@ -20,7 +21,8 @@ create
             method: "GET",
             data:{
                 title : $("#input_title").val(),
-                content : $("#input_content").val()
+                content : $("#input_content").val(),
+                author : $("#input_author").val()
             },
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
