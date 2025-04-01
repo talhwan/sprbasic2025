@@ -16,10 +16,20 @@ public class BoardRestController {
         this.boardService = boardService;
     }
 
-    @GetMapping("/create")
-    public Long create(@RequestParam Map<String, Object> param){
+    @PostMapping("")
+    public Long create(@RequestBody Map<String, Object> param){
         System.out.println("title : " + param.get("title"));
         return boardService.create(param);
+    }
+
+    @PutMapping("")
+    public void update(@RequestBody Map<String, Object> param){
+        boardService.update(param);
+    }
+    @DeleteMapping("")
+    public void delete(@RequestBody Map<String, Object> param){
+        Long id = Long.parseLong(param.get("id") + "");
+        boardService.delete(id);
     }
 
     @GetMapping("/list")

@@ -9,6 +9,8 @@ import java.util.List;
 @Service
 public interface BoardService {
     Long create(Map<String, Object> param);
+    void update(Map<String, Object> param);
+    void delete(Long id);
     List<Board> list();
     Board detail(Long id);
 }

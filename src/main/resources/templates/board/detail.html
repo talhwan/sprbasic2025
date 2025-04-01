@@ -12,8 +12,10 @@ detail
     <button onclick="detailBoard()">상세 보기!</button>
     <br/>
     <br/>
+    <input type="checkbox" id="detail_board_deleted" /> <br/>
     <input type="text" id="detail_board_title" /> <br/>
     <input type="text" id="detail_board_content" /> <br/>
+    <input type="text" id="detail_board_author" /> <br/>
 
     <button onclick="updateBoard()">수정하기</button>
     <button onclick="deleteBoard()">삭제하기</button>
@@ -21,12 +23,14 @@ detail
 
 <script>
     function deleteBoard(){
+        let _data = {
+            id : $("#input_order").val()
+        };
         $.ajax({
-            url: "/api/board/delete",
-            method: "GET",
-            data:{
-                order : $("#input_order").val()
-            },
+            url: "/api/board",
+            method: "DELETE",
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
             },
@@ -36,13 +40,17 @@ detail
         });
     }
     function updateBoard(){
+        let _data = {
+            id : $("#input_order").val()
+            , deleted : $("#detail_board_deleted").prop("checked") // t or f
+            , title : $("#detail_board_title").val()
+            , content : $("#detail_board_content").val()
+        };
         $.ajax({
-            url: "/api/board/update/" + $("#input_order").val(),
-            method: "GET",
-            data:{
-                title : $("#detail_board_title").val()
-                , content : $("#detail_board_content").val()
-            },
+            url: "/api/board",
+            method: "PUT",
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
             },
@@ -62,10 +70,13 @@ detail
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
 
-                let board = data["data"];
+                let board = data;
+                $("#detail_board_deleted").prop("checked", board["deleted"]);
+
                 $("#detail_board_title").val(board["title"]);
                 let content = board["content"];
                 $("#detail_board_content").val(content);
+                $("#detail_board_author").val(board["author"]);
                 //$("#p_result").html(result);
             },
             error: (data, status, xhr)=>{

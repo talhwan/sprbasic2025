@@ -16,14 +16,16 @@ create
 
 <script>
     function createBoard(){
+        let _data = {
+            title : $("#input_title").val(),
+            content : $("#input_content").val(),
+            author : $("#input_author").val()
+        };
         $.ajax({
-            url: "/api/board/create",
-            method: "GET",
-            data:{
-                title : $("#input_title").val(),
-                content : $("#input_content").val(),
-                author : $("#input_author").val()
-            },
+            url: "/api/board",
+            method: "POST",
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
                 //$("#p_result").html(result);
