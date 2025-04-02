@@ -1,9 +1,11 @@
 package com.thc.sprbasic2025.controller;
 
 import com.thc.sprbasic2025.domain.Board;
+import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +19,8 @@ public class BoardRestController {
     }
 
     @PostMapping("")
-    public Long create(@RequestBody Map<String, Object> param){
-        System.out.println("title : " + param.get("title"));
-        return boardService.create(param);
+    public BoardDto.CreateResDto create(@RequestBody BoardDto.CreateReqDto params){
+        return boardService.create(params);
     }
 
     @PutMapping("")

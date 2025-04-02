@@ -1,6 +1,7 @@
 package com.thc.sprbasic2025.service.impl;
 
 import com.thc.sprbasic2025.domain.Board;
+import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.repository.BoardRepository;
 import com.thc.sprbasic2025.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +21,8 @@ public class BoardServiceimpl implements BoardService {
     }
 
     @Override
-    public Long create(Map<String, Object> param) {
-        String title = (String) param.get("title");
-        String content = (String) param.get("content");
-        String author = (String) param.get("author");
-
-        Board board = new Board();
-        board.setTitle(title);
-        board.setContent(content);
-        board.setAuthor(author);
-
-        boardRepository.save(board);
-
-        return board.getId();
+    public BoardDto.CreateResDto create(BoardDto.CreateReqDto param) {
+        return boardRepository.save(param.toEntity()).toCreateResDto();
     }
 
     @Override
