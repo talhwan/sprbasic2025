@@ -24,22 +24,21 @@ public class BoardRestController {
     }
 
     @PutMapping("")
-    public void update(@RequestBody Map<String, Object> param){
-        boardService.update(param);
+    public void update(@RequestBody BoardDto.UpdateReqDto params){
+        boardService.update(params);
     }
     @DeleteMapping("")
-    public void delete(@RequestBody Map<String, Object> param){
-        Long id = Long.parseLong(param.get("id") + "");
-        boardService.delete(id);
+    public void delete(@RequestBody BoardDto.DeleteReqDto params){
+        boardService.delete(params);
     }
 
     @GetMapping("/list")
-    public List<Board> list(){
+    public List<BoardDto.DetailResDto> list(){
         return boardService.list();
     }
     @GetMapping("/detail")
-    public Board detail(@RequestParam Long id){
-        return boardService.detail(id);
+    public BoardDto.DetailResDto detail(@RequestParam BoardDto.DetailReqDto params){
+        return boardService.detail(params);
     }
 
 }

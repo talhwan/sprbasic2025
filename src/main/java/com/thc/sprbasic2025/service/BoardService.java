@@ -10,8 +10,8 @@ import java.util.List;
 @Service
 public interface BoardService {
     BoardDto.CreateResDto create(BoardDto.CreateReqDto param);
-    void update(Map<String, Object> param);
-    void delete(Long id);
-    List<Board> list();
-    Board detail(Long id);
+    void update(BoardDto.UpdateReqDto param);
+    void delete(BoardDto.DeleteReqDto param);
+    List<BoardDto.DetailResDto> list();
+    BoardDto.DetailResDto detail(BoardDto.DetailReqDto param);
 }

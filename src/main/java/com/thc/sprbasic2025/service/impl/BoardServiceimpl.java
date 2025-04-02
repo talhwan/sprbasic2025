@@ -7,10 +7,7 @@ import com.thc.sprbasic2025.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BoardServiceimpl implements BoardService {
@@ -26,69 +23,42 @@ public class BoardServiceimpl implements BoardService {
     }
 
     @Override
-    public void update(Map<String, Object> param) {
-        Long id = Long.parseLong(param.get("id") + "");
-        System.out.println(param.get("deleted"));
-        // 스트링으로는 값이 잘 오는데.. 블리언 바꾸는거 어떻게 할까요?!
-        Boolean deleted = null;
-        if(param.get("deleted") != null){
-            if("true".equals(param.get("deleted") + "")){
-                deleted = true;
-            } else {
-                deleted = false;
-            }
-        }
-        String title = (String) param.get("title");
-        String content = (String) param.get("content");
-        String author = (String) param.get("author");
-
-        Board board = boardRepository.findById(id).orElse(null);
+    public void update(BoardDto.UpdateReqDto param) {
+        Board board = boardRepository.findById(param.getId()).orElse(null);
         if(board == null){
             throw new RuntimeException("no data");
         }
-        if(deleted != null){ board.setDeleted(deleted); }
-        if(title != null){ board.setTitle(title); }
-        if(content != null){ board.setContent(content); }
-        if(author != null){ board.setAuthor(author); }
+        if(param.getDeleted() != null){ board.setDeleted(param.getDeleted()); }
+        if(param.getTitle() != null){ board.setTitle(param.getTitle()); }
+        if(param.getContent() != null){ board.setContent(param.getContent()); }
+        if(param.getAuthor() != null){ board.setAuthor(param.getAuthor()); }
         boardRepository.save(board);
     }
 
     @Override
-    public void delete(Long id) {
-        Board board = null;
-        /*
-        // 1. 디비에서도 그냥 지워버리기!
-        board = boardRepository.findById(id).orElse(null);
-        if(board == null){
-            throw new RuntimeException("no data");
-        }
-        boardRepository.delete(board);
-        // 2. 디비에서 실제로는 안지우고, 지웠다는 기록 남겨두기
-        // 2-1) 여기서 직접 바꿔보기!
-        board = boardRepository.findById(id).orElse(null);
-        if(board == null){
-            throw new RuntimeException("no data");
-        }
-        board.setDeleted(true);
-        boardRepository.save(board);
-        */
-        // 2-2) 업데이트 한테 부탁해보기!
-        Map<String, Object> param = new HashMap<>();
-        param.put("id", id);
-        param.put("deleted", true);
-        update(param);
+    public void delete(BoardDto.DeleteReqDto param) {
+        update(BoardDto.UpdateReqDto.builder().id(param.getId()).deleted(true).build());
     }
 
     @Override
-    public List<Board> list() {
+    public List<BoardDto.DetailResDto> list() {
         List<Board> list = boardRepository.findAll();
-        return list;
+        List<BoardDto.DetailResDto> newList = new ArrayList<>();
+        for(Board each : list){
+            newList.add(detail(BoardDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return newList;
     }
 
     @Override
-    public Board detail(Long id) {
-        //Optional<Board> board = boardRepository.findById(id);
-        Board board = boardRepository.findById(id).orElse(null);
-        return board;
+    public BoardDto.DetailResDto detail(BoardDto.DetailReqDto param) {
+        Board board = boardRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
+        BoardDto.DetailResDto res = BoardDto.DetailResDto.builder()
+                .id(param.getId())
+                .deleted(board.getDeleted())
+                .title(board.getTitle()).content(board.getContent()).author(board.getAuthor())
+                .countread(board.getCountread())
+                .build();
+        return res;
     }
 }

@@ -6,17 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.UUID;
-
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Entity
-public class Board {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-
-    Boolean deleted;
+public class Board extends AuditingFields{
     String title;
     String content;
     String author;

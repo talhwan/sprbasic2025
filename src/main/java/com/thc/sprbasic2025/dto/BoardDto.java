@@ -17,13 +17,32 @@ public class BoardDto {
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class CreateResDto {
         Long id;
-        String title;
     }
 
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class UpdateReqDto {
         Long id;
         Boolean deleted;
+
+        String title;
+        String content;
+        String author;
+        Integer countread;
+    }
+    @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class DeleteReqDto {
+        Long id;
+    }
+    @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class DetailReqDto {
+        Long id;
+    }
+
+    @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+    public static class DetailResDto {
+        Long id;
+        Boolean deleted;
+
         String title;
         String content;
         String author;
