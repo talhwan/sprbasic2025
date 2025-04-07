@@ -12,4 +12,8 @@ public class BoardController {
     public String page(@PathVariable String page){
         return "board/" + page;
     }
+    @RequestMapping("/{page}/{id}")
+    public String page(@PathVariable String page, @PathVariable String id){
+        return "board/" + page;
+    }
 }

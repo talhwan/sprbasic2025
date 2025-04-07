@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.sprbasic2025.mapper.BoardMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
+		SELECT board.id
+			 , board.deleted
+			 , board.created_at as createdAt
+			 , board.modified_at as modifiedAt
+			 , board.title
+			 , board.content
+			 , board.author
+			 , board.countread
+		FROM board
+		WHERE board.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
+		SELECT board.id
+		FROM board
+		WHERE board.id is not NULL
+		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
+	</select>
+</mapper>
+		<!--
+<if test = "deleted != null and deleted !=''">AND board.deleted = #{deleted}</if>
+		<if test = "sdate != null and sdate !=''">AND board.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
+		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= board.created_at</if>
+		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
+-->

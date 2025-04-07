@@ -2,6 +2,7 @@ package com.thc.sprbasic2025.controller;
 
 import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
+import com.thc.sprbasic2025.dto.DefaultDto;
 import com.thc.sprbasic2025.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class BoardRestController {
     }
 
     @PostMapping("")
-    public BoardDto.CreateResDto create(@RequestBody BoardDto.CreateReqDto params){
+    public DefaultDto.CreateResDto create(@RequestBody BoardDto.CreateReqDto params){
         return boardService.create(params);
     }
 
@@ -28,16 +29,16 @@ public class BoardRestController {
         boardService.update(params);
     }
     @DeleteMapping("")
-    public void delete(@RequestBody BoardDto.DeleteReqDto params){
+    public void delete(@RequestBody DefaultDto.DeleteReqDto params){
         boardService.delete(params);
     }
 
     @GetMapping("/list")
-    public List<BoardDto.DetailResDto> list(){
-        return boardService.list();
+    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto params){
+        return boardService.list(params);
     }
     @GetMapping("/detail")
-    public BoardDto.DetailResDto detail(@RequestParam BoardDto.DetailReqDto params){
+    public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto params){
         return boardService.detail(params);
     }
 

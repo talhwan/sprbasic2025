@@ -2,9 +2,10 @@ package com.thc.sprbasic2025.service.impl;
 
 import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
+import com.thc.sprbasic2025.dto.DefaultDto;
+import com.thc.sprbasic2025.mapper.BoardMapper;
 import com.thc.sprbasic2025.repository.BoardRepository;
 import com.thc.sprbasic2025.service.BoardService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,13 +13,20 @@ import java.util.*;
 @Service
 public class BoardServiceimpl implements BoardService {
 
+    /*
+    R => mapper (mybatis)
+    C U D => Repository
+    * */
+
     final BoardRepository boardRepository;
-    public BoardServiceimpl(BoardRepository boardRepository){
+    final BoardMapper boardMapper;
+    public BoardServiceimpl(BoardRepository boardRepository, BoardMapper boardMapper){
         this.boardRepository = boardRepository;
+        this.boardMapper = boardMapper;
     }
 
     @Override
-    public BoardDto.CreateResDto create(BoardDto.CreateReqDto param) {
+    public DefaultDto.CreateResDto create(BoardDto.CreateReqDto param) {
         return boardRepository.save(param.toEntity()).toCreateResDto();
     }
 
@@ -36,22 +44,31 @@ public class BoardServiceimpl implements BoardService {
     }
 
     @Override
-    public void delete(BoardDto.DeleteReqDto param) {
+    public void delete(DefaultDto.DeleteReqDto param) {
         update(BoardDto.UpdateReqDto.builder().id(param.getId()).deleted(true).build());
     }
 
     @Override
-    public List<BoardDto.DetailResDto> list() {
+    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto param) {
+        /*
         List<Board> list = boardRepository.findAll();
         List<BoardDto.DetailResDto> newList = new ArrayList<>();
         for(Board each : list){
-            newList.add(detail(BoardDto.DetailReqDto.builder().id(each.getId()).build()));
+            newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
+        }
+        return newList;
+        */
+        List<BoardDto.DetailResDto> list = boardMapper.list(param);
+        List<BoardDto.DetailResDto> newList = new ArrayList<>();
+        for(BoardDto.DetailResDto each : list){
+            newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
         }
         return newList;
     }
 
     @Override
-    public BoardDto.DetailResDto detail(BoardDto.DetailReqDto param) {
+    public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto param) {
+        /*
         Board board = boardRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
         BoardDto.DetailResDto res = BoardDto.DetailResDto.builder()
                 .id(param.getId())
@@ -60,5 +77,8 @@ public class BoardServiceimpl implements BoardService {
                 .countread(board.getCountread())
                 .build();
         return res;
+        */
+        BoardDto.DetailResDto board = boardMapper.detail(param.getId());
+        return board;
     }
 }

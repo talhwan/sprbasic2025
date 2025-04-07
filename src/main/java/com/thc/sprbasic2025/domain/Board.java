@@ -1,6 +1,6 @@
 package com.thc.sprbasic2025.domain;
 
-import com.thc.sprbasic2025.dto.BoardDto;
+import com.thc.sprbasic2025.dto.DefaultDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +31,8 @@ public class Board extends AuditingFields{
         return new Board(false, title, content, author, 0);
     }
 
-    public BoardDto.CreateResDto toCreateResDto() {
-        return BoardDto.CreateResDto.builder().id(getId()).build();
+    public DefaultDto.CreateResDto toCreateResDto() {
+        return DefaultDto.CreateResDto.builder().id(getId()).build();
     }
     /*
     @PrePersist

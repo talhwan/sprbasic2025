@@ -7,18 +7,46 @@
 </head>
 <body>
 list
+
+<div id="div_list">
+</div>
 <div>
+    <input type="text" id="search_title"/>
+    <select id="search_deleted">
+        <option value="">전체</option>
+        <option value="false">일반</option>
+        <option value="true">삭제</option>
+    </select>
     <button onclick="listBoard()">목록 보기!</button>
 </div>
 
 <script>
+    function location_href(id){
+        alert(id);
+        location.href = "/board/detail/" + id;
+    }
     function listBoard(){
+        let deleted = null;
+        let search_deleted = $("#search_deleted").val();
+        if(search_deleted !== ""){
+            deleted = (search_deleted === "true");
+        }
+
         $.ajax({
             url: "/api/board/list",
             method: "GET",
-            data:{},
+            data:{
+                deleted : deleted
+                , title : $("#search_title").val()
+            },
             success: (data, status, xhr)=>{
-                alert(JSON.stringify(data));
+                //alert(JSON.stringify(data));
+                $("#div_list").html("");
+                for(let each of data){
+                    $("#div_list").append(
+                        "<div onclick='location_href("+each["id"]+")'>"+ each["id"]  + "====" + each["title"]+"</div>"
+                    );
+                }
                 //$("#p_result").html(result);
             },
             error: (data, status, xhr)=>{
