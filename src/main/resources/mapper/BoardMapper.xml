@@ -22,10 +22,25 @@
 		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
 	</select>
-</mapper>
-		<!--
-<if test = "deleted != null and deleted !=''">AND board.deleted = #{deleted}</if>
-		<if test = "sdate != null and sdate !=''">AND board.created_at >= CONCAT(#{sdate}, ' 00:00:00.000000')</if>
-		<if test = "fdate != null and fdate !=''">AND CONCAT(#{fdate}, ' 23:59:59.999999') >= board.created_at</if>
+
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(board.id) as listsize
+		FROM board
+		WHERE board.id is not NULL
+		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
--->
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
+		SELECT board.id
+		FROM board
+		WHERE board.id is not NULL
+		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
+
+		<if test = "orderby != null and orderby =='id'">ORDER BY board.id </if>
+		<if test = "orderby != null and orderby =='title'">ORDER BY board.title </if>
+		<if test = "orderway != null and orderway =='DESC'"> DESC</if>
+		<if test = "orderway != null and orderway =='ASC'"> ASC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+</mapper>

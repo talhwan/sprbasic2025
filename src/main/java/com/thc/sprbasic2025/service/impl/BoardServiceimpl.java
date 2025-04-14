@@ -58,12 +58,60 @@ public class BoardServiceimpl implements BoardService {
         }
         return newList;
         */
-        List<BoardDto.DetailResDto> list = boardMapper.list(param);
+        return detailList(boardMapper.list(param));
+    }
+    public List<BoardDto.DetailResDto> detailList(List<BoardDto.DetailResDto> list){
         List<BoardDto.DetailResDto> newList = new ArrayList<>();
         for(BoardDto.DetailResDto each : list){
             newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
         }
         return newList;
+    }
+
+    @Override
+    public DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto param) {
+        Integer perpage = param.getPerpage(); //한번에 볼 글 갯수
+        if(perpage == null || perpage < 1){
+            perpage = 10;
+        }
+        if(perpage > 100){
+            perpage = 100;
+        }
+        param.setPerpage(perpage);
+
+        int listsize = boardMapper.pagedListCount(param); // 총 글 갯수 가져오기!!
+        int totalpage = listsize / perpage; // 101 / 10 = >10 ?? 11이 되어야 하는데?
+        if(listsize % perpage > 0){
+            totalpage++;
+        }
+
+        Integer callpage = param.getCallpage();
+        if(callpage == null || callpage < 1){
+            //페이지 수가 없거나, 1보다 작은 페이수를 호출할 때
+            callpage = 1;
+        }
+        if(callpage > totalpage){
+            //전체 페이지보다 더 다음 페이지를 호출할때!
+            callpage = totalpage;
+        }
+        param.setCallpage(callpage);
+
+        /*
+        1페이지일때 -> 0
+        2페이지일때 -> (2-1) * perpage
+        * */
+        int offset = (callpage - 1) * perpage;
+        param.setOffset(offset);
+
+        List<BoardDto.DetailResDto> list = boardMapper.pagedList(param);
+
+        return DefaultDto.PagedListResDto.builder()
+                .totalpage(totalpage)
+                .callpage(callpage)
+                .perpage(perpage)
+                .listsize(listsize)
+                .list(detailList(list))
+                .build();
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.thc.sprbasic2025.domain.Board;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 public class DefaultDto {
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
@@ -32,10 +34,29 @@ public class DefaultDto {
         Boolean deleted;
     }
 
-
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto {
         Boolean deleted;
+    }
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class PagedListReqDto {
+        Boolean deleted;
+
+        Integer offset;
+        Integer callpage;
+        Integer perpage;
+        String orderway;
+        String orderby;
+    }
+
+    @Getter @Setter @SuperBuilder
+    @NoArgsConstructor @AllArgsConstructor
+    public static class PagedListResDto {
+        Integer listsize;
+        Integer totalpage;
+        Integer callpage;
+        Integer perpage;
+        Object list;
     }
 
 }

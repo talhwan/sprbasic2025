@@ -42,4 +42,10 @@ public class BoardRestController {
         return boardService.detail(params);
     }
 
+
+    @GetMapping("/pagedList")
+    public DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto params){
+        return boardService.pagedList(params);
+    }
+
 }

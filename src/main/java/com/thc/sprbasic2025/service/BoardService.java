@@ -14,5 +14,6 @@ public interface BoardService {
     void update(BoardDto.UpdateReqDto param);
     void delete(DefaultDto.DeleteReqDto param);
     List<BoardDto.DetailResDto> list(BoardDto.ListReqDto param);
+    DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto param);
     BoardDto.DetailResDto detail(DefaultDto.DetailReqDto param);
 }
