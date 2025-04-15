@@ -59,4 +59,15 @@ public class DefaultDto {
         Object list;
     }
 
+
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class ScrollListReqDto {
+        Boolean deleted;
+
+        String mark;
+        Integer perpage;
+        String orderway;
+        String orderby;
+    }
+
 }

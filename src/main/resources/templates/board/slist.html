@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+slist
+
+<script>
+    function listener_change(){
+        $("#input_changed").val("1");
+    }
+</script>
+<!--mark : <input type="text" id="input_mark"/><br/>-->
+<input type="text" id="input_changed" value="0"/><br/>
+perpage : <input type="number" id="input_perpage"/><br/>
+orderby :
+<select id="input_orderby" onchange="listener_change()">
+    <option value="id">시간순</option>
+    <option value="title">제목 가나다순</option>
+</select><br/>
+orderway :
+<select id="input_orderway" onchange="listener_change()">
+    <option value="DESC">역순</option>
+    <option value="ASC">정순</option>
+</select><br/>
+<div>
+    <input type="text" id="search_title" onchange="listener_change()"/>
+    <select id="search_deleted" onchange="listener_change()">
+        <option value="">전체</option>
+        <option value="false">일반</option>
+        <option value="true">삭제</option>
+    </select>
+    <button onclick="listBoard()">목록 보기!</button>
+</div>
+
+<div id="div_list">
+</div>
+
+<script>
+    function location_href(id){
+        //alert(id);
+        location.href = "/board/detail/" + id;
+    }
+    function listBoard(){
+        let deleted = null;
+        let search_deleted = $("#search_deleted").val();
+        if(search_deleted !== ""){
+            deleted = (search_deleted === "true");
+        }
+
+        let input_changed = $("#input_changed").val();
+        if(input_changed === "1"){
+            $("#div_list").html("");
+            $("#input_changed").val("0");
+        }
+
+        let mark = null;
+        let input_mark_id = $(".input_mark_id");
+        if(input_mark_id.length > 0){
+            let tempMark = $(input_mark_id[input_mark_id.length - 1]).val();
+            mark = tempMark;
+            //alert(mark);
+        }
+
+        $.ajax({
+            url: "/api/board/scrollList",
+            method: "GET",
+            data:{
+                deleted : deleted
+                , title : $("#search_title").val()
+                , perpage : $("#input_perpage").val()
+                , orderby : $("#input_orderby").val()
+                , orderway : $("#input_orderway").val()
+                , mark : mark
+            },
+            success: (data, status, xhr)=>{
+                //alert(JSON.stringify(data));
+                //$("#div_list").html("");
+                for(let each of data){
+                    $("#div_list").append(
+                        "<div onclick='location_href("+each["id"]+")'>"+ each["id"]  + "====" + each["title"]
+                        +"<input class='input_mark_id' value='"+each["id"]+"'/>"
+                        +"</div>"
+                    );
+                }
+                //$("#p_result").html(result);
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+</script>
+</body>
+</html>

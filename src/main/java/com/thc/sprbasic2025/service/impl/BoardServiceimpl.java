@@ -49,15 +49,23 @@ public class BoardServiceimpl implements BoardService {
     }
 
     @Override
-    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto param) {
+    public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto param) {
         /*
-        List<Board> list = boardRepository.findAll();
-        List<BoardDto.DetailResDto> newList = new ArrayList<>();
-        for(Board each : list){
-            newList.add(detail(DefaultDto.DetailReqDto.builder().id(each.getId()).build()));
-        }
-        return newList;
+        Board board = boardRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
+        BoardDto.DetailResDto res = BoardDto.DetailResDto.builder()
+                .id(param.getId())
+                .deleted(board.getDeleted())
+                .title(board.getTitle()).content(board.getContent()).author(board.getAuthor())
+                .countread(board.getCountread())
+                .build();
+        return res;
         */
+        BoardDto.DetailResDto board = boardMapper.detail(param.getId());
+        return board;
+    }
+
+    @Override
+    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto param) {
         return detailList(boardMapper.list(param));
     }
     public List<BoardDto.DetailResDto> detailList(List<BoardDto.DetailResDto> list){
@@ -96,6 +104,18 @@ public class BoardServiceimpl implements BoardService {
         }
         param.setCallpage(callpage);
 
+        String orderby = param.getOrderby();
+        if(orderby == null || orderby.isEmpty()){
+            orderby = "id";
+        }
+        param.setOrderby(orderby);
+
+        String orderway = param.getOrderway();
+        if(orderway == null || orderway.isEmpty()){
+            orderway = "DESC";
+        }
+        param.setOrderway(orderway);
+
         /*
         1페이지일때 -> 0
         2페이지일때 -> (2-1) * perpage
@@ -115,18 +135,43 @@ public class BoardServiceimpl implements BoardService {
     }
 
     @Override
-    public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto param) {
-        /*
-        Board board = boardRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException(""));
-        BoardDto.DetailResDto res = BoardDto.DetailResDto.builder()
-                .id(param.getId())
-                .deleted(board.getDeleted())
-                .title(board.getTitle()).content(board.getContent()).author(board.getAuthor())
-                .countread(board.getCountread())
-                .build();
-        return res;
-        */
-        BoardDto.DetailResDto board = boardMapper.detail(param.getId());
-        return board;
+    public List<BoardDto.DetailResDto> scrollList(BoardDto.ScrollListReqDto param) {
+        Integer perpage = param.getPerpage(); //한번에 볼 글 갯수
+        if(perpage == null || perpage < 1){
+            perpage = 10;
+        }
+        if(perpage > 100){
+            perpage = 100;
+        }
+        param.setPerpage(perpage);
+
+        String orderby = param.getOrderby();
+        if(orderby == null || orderby.isEmpty()){
+            orderby = "id";
+        }
+        param.setOrderby(orderby);
+        if("id".equals(orderby)){
+
+        } else if("title".equals(orderby)){
+            String mark = param.getMark();
+            if(mark != null && !mark.isEmpty()){
+                BoardDto.DetailResDto board = boardMapper.detail(Long.parseLong(mark));
+                if(board != null){
+                    mark = board.getTitle() + "_" + board.getId();
+                    param.setMark(mark);
+                }
+            }
+        }
+
+        String orderway = param.getOrderway();
+        if(orderway == null || orderway.isEmpty()){
+            orderway = "DESC";
+        }
+        param.setOrderway(orderway);
+
+        List<BoardDto.DetailResDto> list = boardMapper.scrollList(param);
+        return detailList(list);
     }
-}
+
+
+    }

@@ -52,4 +52,8 @@ public class BoardDto {
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto{
         String title;
     }
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto{
+        String title;
+    }
 }

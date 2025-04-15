@@ -33,19 +33,23 @@ public class BoardRestController {
         boardService.delete(params);
     }
 
-    @GetMapping("/list")
-    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto params){
-        return boardService.list(params);
-    }
     @GetMapping("/detail")
     public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto params){
         return boardService.detail(params);
     }
 
+    @GetMapping("/list")
+    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto params){
+        return boardService.list(params);
+    }
 
     @GetMapping("/pagedList")
     public DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto params){
         return boardService.pagedList(params);
+    }
+    @GetMapping("/scrollList")
+    public List<BoardDto.DetailResDto> scrollList(BoardDto.ScrollListReqDto params){
+        return boardService.scrollList(params);
     }
 
 }

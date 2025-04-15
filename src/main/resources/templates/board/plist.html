@@ -7,9 +7,6 @@
 </head>
 <body>
 plist
-
-<div id="div_list">
-</div>
 <div>
     callpage : <input type="number" id="input_callpage"/><br/>
     perpage : <input type="number" id="input_perpage"/><br/>
@@ -23,9 +20,6 @@ plist
         <option value="DESC">역순</option>
         <option value="ASC">정순</option>
     </select><br/>
-    <br/>
-    <br/>
-    <br/>
     <input type="text" id="search_title"/>
     <select id="search_deleted">
         <option value="">전체</option>
@@ -34,10 +28,20 @@ plist
     </select>
     <button onclick="plistBoard()">목록 보기!</button>
 </div>
+<div>총 글 수 : <font class="font_board_listsize">-</font></div>
+<div id="div_list">
+</div>
+
+<div id="div_paging">
+</div>
 
 <script>
+    function listener_page(callpage){
+        $("#input_callpage").val(callpage);
+        plistBoard();
+    }
     function location_href(id){
-        alert(id);
+        //alert(id);
         location.href = "/board/detail/" + id;
     }
     function plistBoard(){
@@ -58,8 +62,60 @@ plist
                 , orderway : $("#input_orderway").val()
                 , orderby : $("#input_orderby").val()
             },
-            success: (data, status, xhr)=>{
-                alert(JSON.stringify(data));
+            success: (data, status, xhr)=> {
+                //alert(JSON.stringify(data));
+
+                $(".font_board_listsize").text(data["listsize"]);
+                $("#input_callpage").val(data["callpage"]);
+                $("#input_perpage").val(data["perpage"]);
+
+                let list = data["list"];
+                $("#div_list").html("");
+                for (let each of list) {
+                    $("#div_list").append(
+                        "<div onclick='location_href(" + each["id"] + ")'>" + each["id"] + "====" + each["title"] + "</div>"
+                    );
+                }
+
+                let callpage = Number(data["callpage"]); //3
+                let totalpage = Number(data["totalpage"]); // 10
+
+                $("#div_paging").html("");
+                $("#div_paging").append(
+                    '<a href="javascript:listener_page('+1+')">'+ '<<' +'</a>'
+                );
+
+                for(let i=0;i<5;i++){
+                    let tempPage = callpage - 5 + i;
+                    if(tempPage > 0 && tempPage <= totalpage){
+                        $("#div_paging").append(
+                            '<a href="javascript:listener_page('+tempPage+')">'+ '&nbsp;'+ tempPage +'&nbsp;'+'</a>'
+                        );
+                    }
+                }
+                //현재 페이지!!
+                $("#div_paging").append(
+                    '<a href="javascript:listener_page('+callpage+')">'+ '('+ callpage +')'+'</a>'
+                );
+
+                for(let i=0;i<5;i++){
+                    let tempPage = callpage + 1 + i;
+                    if(tempPage > 0 && tempPage <= totalpage){
+                        $("#div_paging").append(
+                            '<a href="javascript:listener_page('+tempPage+')">'+ '&nbsp;'+ tempPage +'&nbsp;'+'</a>'
+                        );
+                    }
+                }
+
+                $("#div_paging").append(
+                    '<a href="javascript:listener_page('+totalpage+')">'+ '>>' +'</a>'
+                );
+
+                /*
+                << 1 2 (3) 4 5 6 7 8 >>
+                 */
+
+
                 /*$("#div_list").html("");
                 for(let each of data){
                     $("#div_list").append(
@@ -67,7 +123,7 @@ plist
                     );
                 }*/
             },
-            error: (data, status, xhr)=>{
+            error: (data, status, xhr) => {
                 alert(JSON.stringify(data));
             },
         });

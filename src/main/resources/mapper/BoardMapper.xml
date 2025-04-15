@@ -43,4 +43,34 @@
 		<if test = "orderway != null and orderway =='ASC'"> ASC</if>
 		LIMIT #{offset}, #{perpage}
 	</select>
+	<select id="scrollList" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
+		SELECT board.id
+		FROM board
+		WHERE board.id is not NULL
+		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
+
+		<if test = "orderby != null and orderby =='id'">
+			<if test = "orderway != null and orderway =='DESC'">
+				<if test = "mark != null and mark !=''">AND #{mark} > board.id </if>
+				ORDER BY board.id DESC
+			</if>
+			<if test = "orderway != null and orderway =='ASC'">
+				<if test = "mark != null and mark !=''">AND board.id > #{mark}</if>
+				ORDER BY board.id ASC
+			</if>
+		</if>
+		<if test = "orderby != null and orderby =='title'">
+			<if test = "orderway != null and orderway =='DESC'">
+				<if test = "mark != null and mark !=''">AND #{mark} > CONCAT(board.title, '_', board.id) </if>
+				ORDER BY board.title DESC
+			</if>
+			<if test = "orderway != null and orderway =='ASC'">
+				<if test = "mark != null and mark !=''">AND CONCAT(board.title, '_', board.id) > #{mark}</if>
+				ORDER BY board.title ASC
+			</if>
+		</if>
+
+		LIMIT 0, #{perpage}
+	</select>
 </mapper>

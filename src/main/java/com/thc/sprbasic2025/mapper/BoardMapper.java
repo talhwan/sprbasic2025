@@ -10,4 +10,7 @@ public interface BoardMapper {
 
 	List<BoardDto.DetailResDto> pagedList(BoardDto.PagedListReqDto param);
 	int pagedListCount(BoardDto.PagedListReqDto param);
+	List<BoardDto.DetailResDto> scrollList(BoardDto.ScrollListReqDto param);
+
+
 }
