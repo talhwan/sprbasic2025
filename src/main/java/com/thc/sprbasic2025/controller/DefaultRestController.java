@@ -1,18 +1,41 @@
 package com.thc.sprbasic2025.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequestMapping("/api") //모든 메서드에 공통적으로 앞에 붙는 주소값을 넣어줄 수 있습니다!!
+@RequestMapping("/api/default") //모든 메서드에 공통적으로 앞에 붙는 주소값을 넣어줄 수 있습니다!!
 @RestController
 public class DefaultRestController {
 
-    @GetMapping("/test")
+    @PostMapping("/uploadFile")
+    public String uploadFile(MultipartFile file) throws IOException {
+        System.out.println(file.getOriginalFilename());
+        String fileName = file.getOriginalFilename();
+
+
+        String tempPath = "C:/workspace/uploadfiles/sprbasic2025/";
+        File newfile = new File(tempPath);
+        // File 객체에 담긴 폴더가 존재하는지 물어봄!
+        if(!newfile.exists()) {
+            // File 객체에 담긴 폴더가 존재안하면 강제 생성!!
+            newfile.mkdirs();
+        }
+
+        Date date = new Date();
+        String temp_date = date.getTime() + "";
+        FileCopyUtils.copy(file.getBytes(), new File(tempPath + temp_date + "_" + fileName));
+
+        return temp_date + "_" + fileName;
+    }
+
+    /*@GetMapping("/test")
     public Map<String, Object> test(){
         Map<String, Object> map = new HashMap<>();
         map.put("status", 200);
@@ -39,5 +62,5 @@ public class DefaultRestController {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("status", resultCode);
         return resultMap;
-    }
+    }*/
 }

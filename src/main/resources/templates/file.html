@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>index</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+file upload 테스트 입니다!
+
+1) 이미지 업로드
+<input type="file" id="input_file" onchange="readURLFile(this)"/>
+<button onclick="uploadFile(0)">등록</button>
+<img id="img_file" />
+<br/>
+<br/>
+<br/>
+1) 파일 업로드
+<input type="file" id="input_file2" onchange="readURLFile(this)"/>
+<button onclick="uploadFile(1)">등록</button>
+<a id="a_download_file">파일 다운로드!!</a>
+
+
+
+
+
+<script>
+    let tempFile = null;
+    function readURLFile(input) {
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.readAsDataURL(input.files[0]);
+            reader.onload = function(e) {
+                alert(input.files[0].name);
+                tempFile = input.files[0];
+            }
+        }
+    }
+
+    function uploadFile(obj_type) {
+
+        if(tempFile == null){
+            alert("파일 비었습니다!!");
+            return false;
+        }
+        let fileData = new FormData();
+        fileData.append("file", tempFile);
+
+        $.ajax({
+            url: "/api/default/uploadFile",
+            type: "POST",
+            data: fileData ,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                alert(data);
+                if(obj_type === 0){
+                    $("#img_file").attr("src", "/image/" + data);
+                } else {
+                    $("#a_download_file").attr("href", "/download/" + data);
+                }
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+
+    }
+</script>
+</body>
+</html>
