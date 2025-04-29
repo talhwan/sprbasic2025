@@ -4,6 +4,8 @@ import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
 import com.thc.sprbasic2025.service.BoardService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,36 +22,38 @@ public class BoardRestController {
     }
 
     @PostMapping("")
-    public DefaultDto.CreateResDto create(@RequestBody BoardDto.CreateReqDto params){
-        return boardService.create(params);
+    public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody BoardDto.CreateReqDto params){
+        return ResponseEntity.ok(boardService.create(params));
     }
 
     @PutMapping("")
-    public void update(@RequestBody BoardDto.UpdateReqDto params){
+    public ResponseEntity<Void> update(@RequestBody BoardDto.UpdateReqDto params){
         boardService.update(params);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
     @DeleteMapping("")
-    public void delete(@RequestBody DefaultDto.DeleteReqDto params){
+    public ResponseEntity<Void> delete(@RequestBody DefaultDto.DeleteReqDto params){
         boardService.delete(params);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/detail")
-    public BoardDto.DetailResDto detail(DefaultDto.DetailReqDto params){
-        return boardService.detail(params);
+    public ResponseEntity<BoardDto.DetailResDto> detail(DefaultDto.DetailReqDto params){
+        return ResponseEntity.ok(boardService.detail(params));
     }
 
     @GetMapping("/list")
-    public List<BoardDto.DetailResDto> list(BoardDto.ListReqDto params){
-        return boardService.list(params);
+    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params){
+        return ResponseEntity.ok(boardService.list(params));
     }
 
     @GetMapping("/pagedList")
-    public DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto params){
-        return boardService.pagedList(params);
+    public ResponseEntity<DefaultDto.PagedListResDto> pagedList(BoardDto.PagedListReqDto params){
+        return ResponseEntity.ok(boardService.pagedList(params));
     }
     @GetMapping("/scrollList")
-    public List<BoardDto.DetailResDto> scrollList(BoardDto.ScrollListReqDto params){
-        return boardService.scrollList(params);
+    public ResponseEntity<List<BoardDto.DetailResDto>> scrollList(BoardDto.ScrollListReqDto params){
+        return ResponseEntity.ok(boardService.scrollList(params));
     }
 
 }

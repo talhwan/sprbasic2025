@@ -78,81 +78,17 @@ public class BoardServiceimpl implements BoardService {
 
     @Override
     public DefaultDto.PagedListResDto pagedList(BoardDto.PagedListReqDto param) {
-        Integer perpage = param.getPerpage(); //한번에 볼 글 갯수
-        if(perpage == null || perpage < 1){
-            perpage = 10;
-        }
-        if(perpage > 100){
-            perpage = 100;
-        }
-        param.setPerpage(perpage);
-
-        int listsize = boardMapper.pagedListCount(param); // 총 글 갯수 가져오기!!
-        int totalpage = listsize / perpage; // 101 / 10 = >10 ?? 11이 되어야 하는데?
-        if(listsize % perpage > 0){
-            totalpage++;
-        }
-
-        Integer callpage = param.getCallpage();
-        if(callpage == null || callpage < 1){
-            //페이지 수가 없거나, 1보다 작은 페이수를 호출할 때
-            callpage = 1;
-        }
-        if(callpage > totalpage){
-            //전체 페이지보다 더 다음 페이지를 호출할때!
-            callpage = totalpage;
-        }
-        param.setCallpage(callpage);
-
-        String orderby = param.getOrderby();
-        if(orderby == null || orderby.isEmpty()){
-            orderby = "id";
-        }
-        param.setOrderby(orderby);
-
-        String orderway = param.getOrderway();
-        if(orderway == null || orderway.isEmpty()){
-            orderway = "DESC";
-        }
-        param.setOrderway(orderway);
-
-        /*
-        1페이지일때 -> 0
-        2페이지일때 -> (2-1) * perpage
-        * */
-        int offset = (callpage - 1) * perpage;
-        param.setOffset(offset);
-
-        List<BoardDto.DetailResDto> list = boardMapper.pagedList(param);
-
-        return DefaultDto.PagedListResDto.builder()
-                .totalpage(totalpage)
-                .callpage(callpage)
-                .perpage(perpage)
-                .listsize(listsize)
-                .list(detailList(list))
-                .build();
+        DefaultDto.PagedListResDto res = param.init(boardMapper.pagedListCount(param));
+        res.setList(detailList(boardMapper.pagedList(param)));
+        return res;
     }
 
     @Override
     public List<BoardDto.DetailResDto> scrollList(BoardDto.ScrollListReqDto param) {
-        Integer perpage = param.getPerpage(); //한번에 볼 글 갯수
-        if(perpage == null || perpage < 1){
-            perpage = 10;
-        }
-        if(perpage > 100){
-            perpage = 100;
-        }
-        param.setPerpage(perpage);
+        param.init();
 
-        String orderby = param.getOrderby();
-        if(orderby == null || orderby.isEmpty()){
-            orderby = "id";
-        }
-        param.setOrderby(orderby);
-        if("id".equals(orderby)){
-
-        } else if("title".equals(orderby)){
+        //타이틀 로 스크롤 더 요청하는 경우 어쩔수 없이 작업!
+        if("title".equals(param.getOrderby())){
             String mark = param.getMark();
             if(mark != null && !mark.isEmpty()){
                 BoardDto.DetailResDto board = boardMapper.detail(Long.parseLong(mark));
@@ -163,15 +99,8 @@ public class BoardServiceimpl implements BoardService {
             }
         }
 
-        String orderway = param.getOrderway();
-        if(orderway == null || orderway.isEmpty()){
-            orderway = "DESC";
-        }
-        param.setOrderway(orderway);
-
-        List<BoardDto.DetailResDto> list = boardMapper.scrollList(param);
-        return detailList(list);
+        return detailList(boardMapper.scrollList(param));
     }
 
 
-    }
+}

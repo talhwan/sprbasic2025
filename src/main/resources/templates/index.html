@@ -27,6 +27,13 @@ index 입니다!!
 </div>
 
 <script>
+    let userId = localStorage.getItem("userId");
+    if(userId == null){
+        alert("로그인 안됨..")
+    } else {
+        alert("로그인 : " + userId);
+    }
+
     function login(){
         $.ajax({
             url: "/api/login",
