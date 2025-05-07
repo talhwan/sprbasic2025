@@ -8,18 +8,26 @@
 			 , board.deleted
 			 , board.created_at as createdAt
 			 , board.modified_at as modifiedAt
+
+			 , board.user_id as userId
 			 , board.title
 			 , board.content
-			 , board.author
 			 , board.countread
-		FROM board
+
+			 , user.username as userUsername
+			 , user.name as userName
+			 , user.nick as userNick
+
+		FROM board, user
 		WHERE board.id = #{id}
+		  AND board.user_id = user.id
 	</select>
 	<select id="list" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
 		SELECT board.id
 		FROM board
 		WHERE board.id is not NULL
 		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "userId != null">AND board.user_id = #{userId}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
 	</select>
 
@@ -28,6 +36,7 @@
 		FROM board
 		WHERE board.id is not NULL
 		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "userId != null">AND board.user_id = #{userId}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
 	</select>
 	<select id="pagedList" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardDto$DetailResDto">
@@ -35,6 +44,7 @@
 		FROM board
 		WHERE board.id is not NULL
 		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "userId != null">AND board.user_id = #{userId}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
 
 		<if test = "orderby != null and orderby =='id'">ORDER BY board.id </if>
@@ -48,6 +58,7 @@
 		FROM board
 		WHERE board.id is not NULL
 		<if test = "deleted != null">AND board.deleted = #{deleted}</if>
+		<if test = "userId != null">AND board.user_id = #{userId}</if>
 		<if test = "title != null and title !=''">AND board.title LIKE CONCAT('%', #{title}, '%')</if>
 
 		<if test = "orderby != null and orderby =='id'">

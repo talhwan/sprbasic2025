@@ -2,10 +2,12 @@ package com.thc.sprbasic2025.service.impl;
 
 import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
+import com.thc.sprbasic2025.dto.BoardimgDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
 import com.thc.sprbasic2025.mapper.BoardMapper;
 import com.thc.sprbasic2025.repository.BoardRepository;
 import com.thc.sprbasic2025.service.BoardService;
+import com.thc.sprbasic2025.service.BoardimgService;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,14 +22,23 @@ public class BoardServiceimpl implements BoardService {
 
     final BoardRepository boardRepository;
     final BoardMapper boardMapper;
-    public BoardServiceimpl(BoardRepository boardRepository, BoardMapper boardMapper){
+    final BoardimgService boardimgService;
+    public BoardServiceimpl(BoardRepository boardRepository
+            , BoardMapper boardMapper
+            , BoardimgService boardimgService
+    ){
         this.boardRepository = boardRepository;
         this.boardMapper = boardMapper;
+        this.boardimgService = boardimgService;
     }
 
     @Override
     public DefaultDto.CreateResDto create(BoardDto.CreateReqDto param) {
-        return boardRepository.save(param.toEntity()).toCreateResDto();
+        DefaultDto.CreateResDto res = boardRepository.save(param.toEntity()).toCreateResDto();
+        for(String each : param.getImgs()){
+            boardimgService.create(BoardimgDto.CreateReqDto.builder().boardId(res.getId()).url(each).build());
+        }
+        return res;
     }
 
     @Override
@@ -37,9 +48,10 @@ public class BoardServiceimpl implements BoardService {
             throw new RuntimeException("no data");
         }
         if(param.getDeleted() != null){ board.setDeleted(param.getDeleted()); }
+        if(param.getUserId() != null){ board.setUserId(param.getUserId()); }
         if(param.getTitle() != null){ board.setTitle(param.getTitle()); }
         if(param.getContent() != null){ board.setContent(param.getContent()); }
-        if(param.getAuthor() != null){ board.setAuthor(param.getAuthor()); }
+        /*if(param.getAuthor() != null){ board.setAuthor(param.getAuthor()); }*/
         boardRepository.save(board);
     }
 
@@ -60,8 +72,12 @@ public class BoardServiceimpl implements BoardService {
                 .build();
         return res;
         */
-        BoardDto.DetailResDto board = boardMapper.detail(param.getId());
-        return board;
+        BoardDto.DetailResDto res = boardMapper.detail(param.getId());
+        res.setImgs(
+            boardimgService.list(BoardimgDto.ListReqDto.builder().boardId(res.getId()).build())
+        );
+
+        return res;
     }
 
     @Override

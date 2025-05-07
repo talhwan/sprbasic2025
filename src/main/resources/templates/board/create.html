@@ -10,17 +10,93 @@ create
 <div>
     title : <input type="text" id="input_title"/> <br/>
     content : <input type="text" id="input_content"/> <br/>
-    author : <input type="text" id="input_author"/> <br/>
+    <!--author : <input type="text" id="input_author"/> <br/>-->
+
+    <input type="file" id="input_file" onchange="readURLFile(this)"/>
+    <button onclick="uploadFile()">사진 추가</button>
+    <div id="div_img_list">
+    </div>
+
+    <script>
+        let tempFile = null;
+        function readURLFile(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.readAsDataURL(input.files[0]);
+                reader.onload = function(e) {
+                    alert(input.files[0].name);
+                    tempFile = input.files[0];
+                }
+            }
+        }
+
+        function remove_img(obj_this) {
+            //alert(111);
+            //alert($(obj_this).html());
+            ($(obj_this).parent()).remove();
+        }
+        function uploadFile() {
+
+            if(tempFile == null){
+                alert("파일 비었습니다!!");
+                return false;
+            }
+            let fileData = new FormData();
+            fileData.append("file", tempFile);
+
+            $.ajax({
+                url: "/api/default/uploadFile",
+                type: "POST",
+                data: fileData ,
+                cache : false,
+                contentType : false,
+                processData : false,
+                success: (data, status, xhr)=>{
+                    alert(data);
+                    $("#div_img_list").append(
+                        "<div>"
+                      + "<input class='board_imgs' value='"+ data +"'/>"
+                      + "<img style='height:100px' src='"+"/image/" + data+"'/>"
+                      + "<button onclick='remove_img(this)'>삭제</button>"
+                       + "</div>"
+                    );
+                    //$("#img_file").attr("src", "/image/" + data);
+                },
+                error: (data)=>{
+                    alert("error")
+                },
+            });
+
+        }
+    </script>
+
+
+
     <button onclick="createBoard()">작성하기!</button>
 </div>
 
 <script>
     function createBoard(){
+
+        let userId = localStorage.getItem("userId");
+        if(userId == null){
+            alert("로그인 이전입니다. 로그인먼저 해주세요.");
+            location.replace("/user/login");
+        }
+
         let _data = {
             title : $("#input_title").val(),
-            content : $("#input_content").val(),
-            author : $("#input_author").val()
+            content : $("#input_content").val()
         };
+        _data["userId"] = userId;
+
+        let board_imgs = $(".board_imgs");
+        let imgs = [];
+        for(let each of board_imgs){
+            imgs.push($(each).val());
+        }
+        _data["imgs"] = imgs;
+
         $.ajax({
             url: "/api/board",
             method: "POST",

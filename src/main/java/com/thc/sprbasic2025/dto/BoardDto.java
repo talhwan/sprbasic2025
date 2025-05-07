@@ -4,15 +4,19 @@ import com.thc.sprbasic2025.domain.Board;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 public class BoardDto {
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class CreateReqDto {
+        Long userId;
+
         String title;
         String content;
-        String author;
+        List<String> imgs;
 
         public Board toEntity(){
-            return Board.of(getTitle(), getContent(), getAuthor());
+            return Board.of(getUserId(), getTitle(), getContent());
         }
     }
     /*@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
@@ -22,9 +26,9 @@ public class BoardDto {
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class UpdateReqDto extends DefaultDto.UpdateReqDto{
+        Long userId;
         String title;
         String content;
-        String author;
         Integer countread;
     }
     /*@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
@@ -38,22 +42,31 @@ public class BoardDto {
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class DetailResDto extends DefaultDto.DetailResDto{
+        Long userId;
         String title;
         String content;
-        String author;
+        /*String author;*/
         Integer countread;
+        List<BoardimgDto.DetailResDto> imgs;
+
+        String userUsername;
+        String userName;
+        String userNick;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto extends DefaultDto.ListReqDto{
+        Long userId;
         String title;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto{
+        Long userId;
         String title;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto{
+        Long userId;
         String title;
     }
 }
