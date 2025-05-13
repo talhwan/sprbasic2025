@@ -1,11 +1,13 @@
 package com.thc.sprbasic2025.service.impl;
 
 import com.thc.sprbasic2025.domain.Board;
+import com.thc.sprbasic2025.domain.Boardlike;
 import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.dto.BoardimgDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
 import com.thc.sprbasic2025.mapper.BoardMapper;
 import com.thc.sprbasic2025.repository.BoardRepository;
+import com.thc.sprbasic2025.repository.BoardlikeRepository;
 import com.thc.sprbasic2025.service.BoardService;
 import com.thc.sprbasic2025.service.BoardimgService;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,16 @@ public class BoardServiceimpl implements BoardService {
     final BoardRepository boardRepository;
     final BoardMapper boardMapper;
     final BoardimgService boardimgService;
+    final BoardlikeRepository boardlikeRepository;
     public BoardServiceimpl(BoardRepository boardRepository
             , BoardMapper boardMapper
             , BoardimgService boardimgService
+            , BoardlikeRepository boardlikeRepository
     ){
         this.boardRepository = boardRepository;
         this.boardMapper = boardMapper;
         this.boardimgService = boardimgService;
+        this.boardlikeRepository = boardlikeRepository;
     }
 
     @Override
@@ -74,8 +79,13 @@ public class BoardServiceimpl implements BoardService {
         */
         BoardDto.DetailResDto res = boardMapper.detail(param.getId());
         res.setImgs(
-            boardimgService.list(BoardimgDto.ListReqDto.builder().boardId(res.getId()).build())
+            boardimgService.list(BoardimgDto.ListReqDto.builder().deleted(false).boardId(res.getId()).build())
         );
+
+        Boardlike boardlike = boardlikeRepository.findByDeletedAndBoardIdAndUserId(false ,res.getId(), param.getUserId());
+        res.setLiked(boardlike != null);
+
+
 
         return res;
     }

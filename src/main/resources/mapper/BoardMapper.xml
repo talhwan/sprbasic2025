@@ -13,6 +13,7 @@
 			 , board.title
 			 , board.content
 			 , board.countread
+			 , board.countlike
 
 			 , user.username as userUsername
 			 , user.name as userName

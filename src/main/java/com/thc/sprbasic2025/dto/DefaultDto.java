@@ -25,6 +25,7 @@ public class DefaultDto {
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class DetailReqDto {
         Long id;
+        Long userId;
     }
 
     @Getter @Setter @SuperBuilder

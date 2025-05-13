@@ -15,10 +15,85 @@ detail
     <input type="checkbox" id="detail_board_deleted" /> <br/>
     <input type="text" id="detail_board_title" /> <br/>
     <input type="text" id="detail_board_content" /> <br/>
-    <input type="text" id="detail_board_author" /> <br/>
+    like!!! :
+    <input type="number" id="detail_board_countlike" /> <br/>
+
+    <div id="div_imgs">
+
+    </div>
+
+    <input type="file" id="input_file" onchange="readURLFile(this)"/>
+    <button onclick="uploadFile()">사진 추가</button>
+
+    <script>
+        let tempFile = null;
+        function readURLFile(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.readAsDataURL(input.files[0]);
+                reader.onload = function(e) {
+                    alert(input.files[0].name);
+                    tempFile = input.files[0];
+                }
+            }
+        }
+        function uploadFile() {
+
+            if(tempFile == null){
+                alert("파일 비었습니다!!");
+                return false;
+            }
+            let fileData = new FormData();
+            fileData.append("file", tempFile);
+
+            $.ajax({
+                url: "/api/default/uploadFile",
+                type: "POST",
+                data: fileData ,
+                cache : false,
+                contentType : false,
+                processData : false,
+                success: (data, status, xhr)=>{
+                    //alert(data);
+                    createBoardimg(data);
+                },
+                error: (data)=>{
+                    alert("error")
+                },
+            });
+
+        }
+        function createBoardimg(obj_data){
+            let _data = {
+                url : obj_data,
+                boardId : $("#input_order").val()
+            };
+
+            $.ajax({
+                url: "/api/boardimg",
+                method: "POST",
+                contentType : 'application/json; charset=utf-8',
+                data: JSON.stringify(_data),
+                success: (data, status, xhr)=>{
+                    //alert(JSON.stringify(data));
+
+                    $("#div_imgs").append(
+                        "<div>"
+                        + "<img src='" + "/image/" +obj_data+"' style='height:100px;'/>"
+                        +"<button onclick='listner_img_delete(this, "+data["id"]+")'>삭제</button>"
+                        +"</div>"
+                    );
+                },
+                error: (data, status, xhr)=>{
+                    alert(JSON.stringify(data));
+                },
+            });
+        }
+    </script>
 
     <button onclick="updateBoard()">수정하기</button>
     <button onclick="deleteBoard()">삭제하기</button>
+    <button onclick="toggleBoardlike()">좋아요 토클</button>
 </div>
 
 <script>
@@ -59,13 +134,55 @@ detail
             },
         });
     }
+    function listner_img_delete(obj_this, obj_id){
+        deleteBoardimg(obj_this, obj_id);
+    }
+    function deleteBoardimg(obj_this, obj_id){
+        let _data = {
+            id : obj_id
+        };
+        $.ajax({
+            url: "/api/boardimg",
+            method: "DELETE",
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify(_data),
+            success: (data, status, xhr)=>{
+                //alert(JSON.stringify(data));
+                $(obj_this).parent().remove();
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
+    function toggleBoardlike(){
+        let userId = localStorage.getItem("userId");
+        let _data = {
+            boardId : $("#input_order").val()
+            , userId : userId
+        };
+        $.ajax({
+            url: "/api/boardlike/toggle",
+            method: "POST",
+            contentType : 'application/json; charset=utf-8',
+            data: JSON.stringify(_data),
+            success: (data, status, xhr)=>{
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
     function detailBoard(){
+        let userId = localStorage.getItem("userId");
+
         $.ajax({
             //url: "/api/board/detail/" + $("#input_order").val(),
             url: "/api/board/detail",
             method: "GET",
             data:{
                 id : $("#input_order").val()
+                , userId : userId
             },
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
@@ -76,7 +193,17 @@ detail
                 $("#detail_board_title").val(board["title"]);
                 let content = board["content"];
                 $("#detail_board_content").val(content);
-                $("#detail_board_author").val(board["author"]);
+                $("#detail_board_countlike").val(board["countlike"]);
+
+                let imgs = board["imgs"];
+                for(let each of imgs){
+                    $("#div_imgs").append(
+                        "<div>"
+                        + "<img src='" + "/image/" +each["url"]+"' style='height:100px;'/>"
+                        +"<button onclick='listner_img_delete(this, "+each["id"]+")'>삭제</button>"
+                        +"</div>"
+                    );
+                }
                 //$("#p_result").html(result);
             },
             error: (data, status, xhr)=>{

@@ -47,11 +47,14 @@ public class BoardDto {
         String content;
         /*String author;*/
         Integer countread;
+        Integer countlike;
         List<BoardimgDto.DetailResDto> imgs;
 
         String userUsername;
         String userName;
         String userNick;
+
+        Boolean liked;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor

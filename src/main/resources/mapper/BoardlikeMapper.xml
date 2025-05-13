@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thc.sprbasic2025.mapper.BoardlikeMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardlikeDto$DetailResDto">
+		SELECT boardlike.id
+			 , boardlike.deleted
+			 , boardlike.created_at as createdAt
+			 , boardlike.modified_at as modifiedAt
+			 , boardlike.board_id as boardId
+			 , boardlike.user_id as userId
+		FROM boardlike
+		WHERE boardlike.id = #{id}
+	</select>
+	<select id="list" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardlikeDto$DetailResDto">
+		SELECT boardlike.id
+		FROM boardlike
+		WHERE boardlike.id is not NULL
+		<if test = "deleted != null">AND boardlike.deleted = #{deleted}</if>
+		<if test = "boardId != null and boardId !=''">AND boardlike.board_id = #{boardId}</if>
+		<if test = "userId != null and userId !=''">AND boardlike.user_id = #{userId}</if>
+	</select>
+
+	<select id="pagedListCount" parameterType="hashMap" resultType="Integer">
+		SELECT count(boardlike.id) as listsize
+		FROM boardlike
+		WHERE boardlike.id is not NULL
+		<if test = "deleted != null">AND boardlike.deleted = #{deleted}</if>
+		<if test = "boardId != null and boardId !=''">AND boardlike.board_id = #{boardId}</if>
+		<if test = "userId != null and userId !=''">AND boardlike.user_id = #{userId}</if>
+	</select>
+	<select id="pagedList" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardlikeDto$DetailResDto">
+		SELECT boardlike.id
+		FROM boardlike
+		WHERE boardlike.id is not NULL
+		<if test = "deleted != null">AND boardlike.deleted = #{deleted}</if>
+		<if test = "boardId != null and boardId !=''">AND boardlike.board_id = #{boardId}</if>
+		<if test = "userId != null and userId !=''">AND boardlike.user_id = #{userId}</if>
+
+		<if test = "orderby != null and orderby =='id'">ORDER BY boardlike.id </if>
+		<if test = "orderby != null and orderby =='title'">ORDER BY boardlike.title </if>
+		<if test = "orderway != null and orderway =='DESC'"> DESC</if>
+		<if test = "orderway != null and orderway =='ASC'"> ASC</if>
+		LIMIT #{offset}, #{perpage}
+	</select>
+	<select id="scrollList" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.BoardlikeDto$DetailResDto">
+		SELECT boardlike.id
+		FROM boardlike
+		WHERE boardlike.id is not NULL
+		<if test = "deleted != null">AND boardlike.deleted = #{deleted}</if>
+		<if test = "boardId != null and boardId !=''">AND boardlike.board_id = #{boardId}</if>
+		<if test = "userId != null and userId !=''">AND boardlike.user_id = #{userId}</if>
+
+		<if test = "orderby != null and orderby =='id'">
+			<if test = "orderway != null and orderway =='DESC'">
+				<if test = "mark != null and mark !=''">AND #{mark} > boardlike.id </if>
+				ORDER BY boardlike.id DESC
+			</if>
+			<if test = "orderway != null and orderway =='ASC'">
+				<if test = "mark != null and mark !=''">AND boardlike.id > #{mark}</if>
+				ORDER BY boardlike.id ASC
+			</if>
+		</if>
+		<if test = "orderby != null and orderby =='title'">
+			<if test = "orderway != null and orderway =='DESC'">
+				<if test = "mark != null and mark !=''">AND #{mark} > CONCAT(boardlike.title, '_', boardlike.id) </if>
+				ORDER BY boardlike.title DESC
+			</if>
+			<if test = "orderway != null and orderway =='ASC'">
+				<if test = "mark != null and mark !=''">AND CONCAT(boardlike.title, '_', boardlike.id) > #{mark}</if>
+				ORDER BY boardlike.title ASC
+			</if>
+		</if>
+		LIMIT 0, #{perpage}
+	</select>
+</mapper>
